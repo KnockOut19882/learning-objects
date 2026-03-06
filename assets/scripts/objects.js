@@ -7,4 +7,10 @@ const person = {
     }
 };
 
-person.greet();
+// person.greet();
+
+person.age = 31;
+person.hairColor = 'blonde';
+delete person.name;
+
+console.log(person);
