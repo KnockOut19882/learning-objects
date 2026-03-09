@@ -3,7 +3,7 @@ const searchButton = document.getElementById("search-btn");
 
 const movies = [];
 
-const renderMovies = (filterTerm = '') => {
+const renderMovies = (filterTerm = "") => {
   const movieList = document.getElementById("movie-list");
 
   if (movies.length === 0) {
@@ -12,16 +12,20 @@ const renderMovies = (filterTerm = '') => {
   } else {
     movieList.classList.add("visible");
   }
-  movieList.innerHTML = "";
+  movieList.innerHTML = ""; // Clear the existing list before rendering the filtered movies
 
-  const filteredMovies = !filterTerm ? movies : movies.filter(movie => movie.info.title.includes(filterTerm));
+  const filteredMovies = !filterTerm
+    ? movies
+    : movies.filter((movie) => movie.info.title.includes(filterTerm));
 
   filteredMovies.forEach((movie) => {
     const movieElement = document.createElement("li");
-    let text = movie.info.title + " - ";
-    for (const key in movie.info) {
+    const { info, } = movie; // Destructuring to separate info from other properties
+    const { title: movieTitle } = info; // Destructuring to extract the title from info and rename it to movieTitle
+    let text = movieTitle + " - "; // Start with the title
+    for (const key in info) {
       if (key !== "title") {
-        text = text + `${key}: ${movie.info[key]}`;
+        text = text + `${key}: ${info[key]}`;
       }
     }
     movieElement.textContent = text;
