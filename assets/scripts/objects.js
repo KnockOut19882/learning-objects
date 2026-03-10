@@ -20,9 +20,11 @@ const renderMovies = (filterTerm = "") => {
 
   filteredMovies.forEach((movie) => {
     const movieElement = document.createElement("li");
-    const { info, } = movie; // Destructuring to separate info from other properties
-    const { title: movieTitle } = info; // Destructuring to extract the title from info and rename it to movieTitle
-    let text = movieTitle + " - "; // Start with the title
+    const { info } = movie; // Destructuring to separate info from other properties
+    // const { title: movieTitle } = info; // Destructuring to extract the title from info and rename it to movieTitle
+    let { formattedTitle } = movie; // Destructuring to extract the formattedTitle method from info
+    formattedTitle = formattedTitle.bind(movie); // Bind the formattedTitle method to the movie object to ensure it has the correct context when called
+    let text = formattedTitle() + " - "; // Start with the title
     for (const key in info) {
       if (key !== "title") {
         text = text + `${key}: ${info[key]}`;
@@ -52,6 +54,10 @@ const addMovieHandler = () => {
       [extraName]: extraValue,
     },
     id: Math.random().toString(),
+    formattedTitle: function () {
+      console.log(this);
+      return this.info.title.toUpperCase();
+    }
   };
   movies.push(newMovie);
   renderMovies();
