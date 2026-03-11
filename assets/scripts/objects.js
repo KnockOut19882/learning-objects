@@ -8,7 +8,7 @@ const renderMovies = (filterTerm = "") => {
 
   if (movies.length === 0) {
     movieList.classList.remove("visible");
-    return;
+    return; // Exit the function early if there are no movies to display
   } else {
     movieList.classList.add("visible");
   }
@@ -22,11 +22,11 @@ const renderMovies = (filterTerm = "") => {
     const movieElement = document.createElement("li");
     const { info } = movie; // Destructuring to separate info from other properties
     // const { title: movieTitle } = info; // Destructuring to extract the title from info and rename it to movieTitle
-    let { formattedTitle } = movie; // Destructuring to extract the formattedTitle method from info
-    formattedTitle = formattedTitle.bind(movie); // Bind the formattedTitle method to the movie object to ensure it has the correct context when called
-    let text = formattedTitle() + " - "; // Start with the title
+    // let { formattedTitle } = movie; // Destructuring to extract the formattedTitle method from info and rename it to formattedTitle
+    // formattedTitle = formattedTitle.bind(movie); // Bind the formattedTitle method to the movie object to ensure it has the correct context when called
+    let text = info._title + " - "; // Start with the title, 
     for (const key in info) {
-      if (key !== "title") {
+      if (key !== "title" && key !== "_title") {
         text = text + `${key}: ${info[key]}`;
       }
     }
@@ -41,7 +41,7 @@ const addMovieHandler = () => {
   const extraValue = document.getElementById("extra-value").value;
 
   if (
-    title.trim() === "" ||
+    // title.trim() === "" ||
     extraName.trim() === "" ||
     extraValue.trim() === ""
   ) {
@@ -50,7 +50,17 @@ const addMovieHandler = () => {
 
   const newMovie = {
     info: {
-      title,
+      set title(value) {
+        // this._title = value.trim() === "" ? "DEFAULT" : value; // Use a ternary operator to set the title to "DEFAULT" if the value is empty after trimming, otherwise set it to the provided value
+        if(value.trim() === "") {
+          this._title = "DEFAULT";
+          return;
+        }
+        this._title = value; // Use the setter to set the title, which will handle the validation and default value logic
+      },
+      get title() {
+        return this._title;
+      },
       [extraName]: extraValue,
     },
     id: Math.random().toString(),
@@ -59,6 +69,8 @@ const addMovieHandler = () => {
       return this.info.title.toUpperCase();
     }
   };
+  newMovie.info.title = title; // Use the setter to set the title, which will handle the validation and default value logic
+  console.log(newMovie.info.title); // Log the title to the console to verify that it has been set correctly
   movies.push(newMovie);
   renderMovies();
 };
